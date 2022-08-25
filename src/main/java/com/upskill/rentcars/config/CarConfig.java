@@ -11,7 +11,7 @@ import java.util.List;
 @Configuration
 public class CarConfig {
 
-    @Bean
+    /*@Bean
     CommandLineRunner commandLineRunner(CarRepository carRepository){
         return args -> {
             Car car1 = new Car(1L, "Toyota Camry", "Black", 2020, 1111420, "$45/day");
@@ -21,5 +21,5 @@ public class CarConfig {
                     List.of(car1, car2, car3)
             );
         };
-    }
+    }*/
 }

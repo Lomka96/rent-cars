@@ -59,10 +59,26 @@ public class CarService {
         if (isFieldSet(updateCar.getCostPerDay())) {
             car.setCostPerDay(updateCar.getCostPerDay());
         }
+        if (isFieldSet(updateCar.getColor())) {
+            car.setColor(updateCar.getColor());
+        }
+        if (isFieldSet(updateCar.getModel())) {
+            car.setModel(updateCar.getModel());
+        }
+        if (isField(updateCar.getYear())) {
+            car.setYear(updateCar.getYear());
+        }
+        if (isField(updateCar.getVinId())) {
+            car.setVinId(updateCar.getVinId());
+        }
         return carRepository.save(car);
     }
 
     public boolean isFieldSet(String field) {
         return !(field == null || field.isEmpty());
+    }
+
+    public boolean isField(int field) {
+        return (field != 0);
     }
 }
