@@ -3,9 +3,8 @@ package com.upskill.rentcars.controller;
 import com.upskill.rentcars.model.Car;
 import com.upskill.rentcars.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +22,26 @@ public class CarController {
     @GetMapping
     public List<Car> getCars(){
         return carService.getCars();
+    }
+
+    @PostMapping
+    public void registerNewCar(@RequestBody Car car){
+        carService.addNewCar(car);
+    }
+
+    @DeleteMapping("/{carId}")
+    public void deleteCarById(@PathVariable("carId") Long carId){
+        carService.deleteCar(carId);
+    }
+
+    /*@PutMapping("/{carId}")
+    public void updateCar(@PathVariable("carId") Long carId,
+                          @RequestParam(required = false) String costPerDay) {
+        carService.updateCar(carId, costPerDay);
+    }*/
+
+    @PatchMapping("/{carId}")
+    public Car updateCar(@PathVariable("carId") Long carId, @RequestBody Car car) {
+        return carService.updateCar(carId, car);
     }
 }
