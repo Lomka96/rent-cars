@@ -2,56 +2,58 @@ package com.upskill.rentcars.service;
 
 import com.upskill.rentcars.model.Car;
 import com.upskill.rentcars.repository.CarRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class CarService {
+@RequiredArgsConstructor
+@Transactional
+@Slf4j
+public class CarService implements com.upskill.rentcars.service.Service {
 
     private final CarRepository carRepository;
 
-    @Autowired
-    public CarService(CarRepository carRepository) {
-        this.carRepository = carRepository;
-    }
-
+    @Override
     public List<Car> getCars(){
         return carRepository.findAll();
     }
 
-    public void addNewCar(Car car) {
+    @Override
+    public Car getCar(Long carId) {
+        log.info("Fetching car by id: {}", carId);
+        return carRepository.findById(carId).get();
+    }
+
+    @Override
+    public Car addNewCar(Car car) {
         Optional<Car> carByVinId = carRepository.findCarByVinId(car.getVinId());
         if(carByVinId.isPresent()) {
             throw new IllegalArgumentException("Vin taken");
         }
-        carRepository.save(car);
+        log.info("Saving a new car with vinId: {}", car.getVinId());
+        return carRepository.save(car);
     }
 
-    public void deleteCar(Long carId) {
+    @Override
+    public boolean deleteCar(Long carId) {
         boolean exists = carRepository.existsById(carId);
         if(!exists){
             throw new IllegalArgumentException("Car with id " + carId + " does not exists");
         }
+        log.info("Deleting a car with id: {}", carId);
         carRepository.deleteById(carId);
+        return true;
     }
 
-    /*@Transactional
-    public void updateCar(Long carId, String costPerDay){
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "car with id " + carId + " does not exists"
-                ));
-        if(costPerDay != null && costPerDay.length() > 0 && !Objects.equals(car.getCostPerDay(), costPerDay)){
-            car.setCostPerDay(costPerDay);
-        }
-    }*/
-
     @Transactional
+    @Override
     public Car updateCar(Long carId, Car updateCar) {
         Car car = carRepository.findById(carId).orElseThrow(() ->
                 new IllegalStateException("car with id " + carId + " does not exists"));
@@ -71,7 +73,14 @@ public class CarService {
         if (isField(updateCar.getVinId())) {
             car.setVinId(updateCar.getVinId());
         }
+        log.info("Updating a car with vinId: {}", car.getVinId());
         return carRepository.save(car);
+    }
+
+    @Override
+    public List<Car> list(int limit) {
+        log.info("Fetching all cars");
+        return carRepository.findAll(PageRequest.of(0, limit)).toList();
     }
 
     public boolean isFieldSet(String field) {
@@ -80,5 +89,10 @@ public class CarService {
 
     public boolean isField(int field) {
         return (field != 0);
+    }
+
+    private String setServerImageUrl(){
+        String[] imageNames = {"car1.png", "car2.png", "car3.png"};
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/cars/image" + imageNames[2]).toUriString();
     }
 }
