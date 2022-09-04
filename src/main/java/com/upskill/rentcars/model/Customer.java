@@ -14,16 +14,15 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Data
 @Entity
-public class Car {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String model;
-    private String color;
-    private int year;
-    private int vinId;
-    private String imageUrl;
-    @NotEmpty(message = "cost cannot be empty or null")
-    private String costPerDay;
+    private String firstName;
+    private String lastName;
+    private int driverLicense;
+    private String email;
+    /*@NotEmpty(message = "cost cannot be empty or null")
+    private String costPerDay;*/
 }
