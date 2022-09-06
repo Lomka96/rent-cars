@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +24,6 @@ public class Customer {
     private String lastName;
     private int driverLicense;
     private String email;
-    /*@NotEmpty(message = "cost cannot be empty or null")
-    private String costPerDay;*/
+    private LocalDateTime startDate;
+    private LocalDateTime finishDate;
 }

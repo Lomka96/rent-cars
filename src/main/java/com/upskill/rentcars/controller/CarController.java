@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static java.time.LocalDateTime.now;
@@ -130,10 +131,12 @@ public class CarController {
                         .build()
         );
     }*/
-
     @GetMapping(path = "/images/car/{id}", produces = IMAGE_JPEG_VALUE)
+
     public byte[] getCarImage(@PathVariable("id") Long carId) throws IOException {
+        Random random = new Random();
+        carId = Long.valueOf(random.nextInt(10));
         return Files.readAllBytes(Paths.get(
-                System.getProperty("user.dir") + "/src/main/resources/static/images/cars/car-" + carId + ".jpg"));
+                System.getProperty("user.dir") + "/src/main/resources/static/images/cars/car" + carId + ".jpg"));
     }
 }

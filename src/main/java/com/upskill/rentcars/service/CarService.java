@@ -77,6 +77,9 @@ public class CarService implements com.upskill.rentcars.service.Service {
         if (isField(updateCar.getVinId())) {
             car.setVinId(updateCar.getVinId());
         }
+        if (isFieldSet(updateCar.getImageUrl())) {
+            car.setImageUrl(updateCar.getImageUrl());
+        }
         log.info("Updating a car with vinId: {}", car.getVinId());
         return carRepository.save(car);
     }
@@ -99,6 +102,6 @@ public class CarService implements com.upskill.rentcars.service.Service {
         Random random = new Random();
         int pictureNumber = random.nextInt(10);
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(
-                "/cars/images/car/" + pictureNumber).toUriString();
+                "/cars/images/car" + pictureNumber + ".jpg").toUriString();
     }
 }
