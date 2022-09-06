@@ -55,12 +55,6 @@ public class CarController {
         carService.deleteCar(carId);
     }
 
-    /*@PutMapping("/{carId}")
-    public void updateCar(@PathVariable("carId") Long carId,
-                          @RequestParam(required = false) String costPerDay) {
-        carService.updateCar(carId, costPerDay);
-    }*/
-
     @PatchMapping("/update/{carId}")
     public Car updateCar(@PathVariable("carId") Long carId, @RequestBody Car car) {
         return carService.updateCar(carId, car);

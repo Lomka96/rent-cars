@@ -102,6 +102,6 @@ public class CarService implements com.upskill.rentcars.service.Service {
         Random random = new Random();
         int pictureNumber = random.nextInt(10);
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(
-                "/cars/images/car" + pictureNumber + ".jpg").toUriString();
+                "/cars/images/car/" + pictureNumber).toUriString();
     }
 }
