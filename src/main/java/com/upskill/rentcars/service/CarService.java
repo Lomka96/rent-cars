@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +40,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
         if(carByVinId.isPresent()) {
             throw new IllegalArgumentException("Vin taken");
         }
+        //car.setImageUrl(setServerImageUrl());
         log.info("Saving a new car with vinId: {}", car.getVinId());
         return carRepository.save(car);
     }
@@ -73,6 +77,9 @@ public class CarService implements com.upskill.rentcars.service.Service {
         if (isField(updateCar.getVinId())) {
             car.setVinId(updateCar.getVinId());
         }
+        if (isFieldSet(updateCar.getImageUrl())) {
+            car.setImageUrl(updateCar.getImageUrl());
+        }
         log.info("Updating a car with vinId: {}", car.getVinId());
         return carRepository.save(car);
     }
@@ -90,6 +97,13 @@ public class CarService implements com.upskill.rentcars.service.Service {
     public boolean isField(int field) {
         return (field != 0);
     }
+
+    /*private String setServerImageUrl(){
+        Random random = new Random();
+        int pictureNumber = random.nextInt(10);
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(
+                "/cars/images/car/" + pictureNumber).toUriString();
+    }*/
 
     private String setServerImageUrl(){
         String[] imageNames = {"car1.png", "car2.png", "car3.png"};
