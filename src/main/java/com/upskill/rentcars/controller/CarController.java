@@ -125,11 +125,17 @@ public class CarController {
                         .build()
         );
     }*/
-    @GetMapping(path = "/images/car/{id}", produces = IMAGE_JPEG_VALUE)
+    /*@GetMapping(path = "/images/car/{id}", produces = IMAGE_JPEG_VALUE)
 
     public byte[] getCarImage(@PathVariable("id") Long carId) throws IOException {
         Random random = new Random();
         carId = Long.valueOf(random.nextInt(10));
+        return Files.readAllBytes(Paths.get(
+                System.getProperty("user.dir") + "/src/main/resources/static/images/cars/car" + carId + ".jpg"));
+    }*/
+
+    @GetMapping(path = "/images/car/{id}", produces = IMAGE_JPEG_VALUE)
+    public byte[] getCarImage(@PathVariable("id") Long carId) throws IOException {
         return Files.readAllBytes(Paths.get(
                 System.getProperty("user.dir") + "/src/main/resources/static/images/cars/car" + carId + ".jpg"));
     }

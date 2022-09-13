@@ -40,7 +40,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
         if(carByVinId.isPresent()) {
             throw new IllegalArgumentException("Vin taken");
         }
-        car.setImageUrl(setServerImageUrl());
+        //car.setImageUrl(setServerImageUrl());
         log.info("Saving a new car with vinId: {}", car.getVinId());
         return carRepository.save(car);
     }
@@ -98,10 +98,15 @@ public class CarService implements com.upskill.rentcars.service.Service {
         return (field != 0);
     }
 
-    private String setServerImageUrl(){
+    /*private String setServerImageUrl(){
         Random random = new Random();
         int pictureNumber = random.nextInt(10);
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(
                 "/cars/images/car/" + pictureNumber).toUriString();
+    }*/
+
+    private String setServerImageUrl(){
+        String[] imageNames = {"car1.png", "car2.png", "car3.png"};
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/cars/image" + imageNames[2]).toUriString();
     }
 }
