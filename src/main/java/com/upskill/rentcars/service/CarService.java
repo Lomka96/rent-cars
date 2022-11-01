@@ -1,7 +1,9 @@
 package com.upskill.rentcars.service;
 
-import com.upskill.rentcars.model.Car;
+import com.upskill.rentcars.model.db.Car;
+import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.repository.CarRepository;
+import com.upskill.rentcars.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -9,11 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +21,7 @@ import java.util.Random;
 public class CarService implements com.upskill.rentcars.service.Service {
 
     private final CarRepository carRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public List<Car> getCars(){
@@ -36,7 +36,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
 
     @Override
     public Car addNewCar(Car car) {
-        Optional<Car> carByVinId = carRepository.findCarByVinId(car.getVinId());
+        Optional<Car> carByVinId = carRepository.findByVinId(car.getVinId());
         if(carByVinId.isPresent()) {
             throw new IllegalArgumentException("Vin taken");
         }
@@ -71,10 +71,10 @@ public class CarService implements com.upskill.rentcars.service.Service {
         if (isFieldSet(updateCar.getModel())) {
             car.setModel(updateCar.getModel());
         }
-        if (isField(updateCar.getYear())) {
+        if (isFieldSet(updateCar.getYear())) {
             car.setYear(updateCar.getYear());
         }
-        if (isField(updateCar.getVinId())) {
+        if (isFieldSet(updateCar.getVinId())) {
             car.setVinId(updateCar.getVinId());
         }
         if (isFieldSet(updateCar.getImageUrl())) {
@@ -90,11 +90,21 @@ public class CarService implements com.upskill.rentcars.service.Service {
         return carRepository.findAll(PageRequest.of(0, limit)).toList();
     }
 
+    /*@Override
+    public Car addCustomerToList(Long carId, Long id) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() ->
+                new IllegalStateException("customer with id " + id + " does not exists"));
+        Car car = carRepository.findById(carId).orElseThrow(() ->
+                new IllegalStateException("car with carId " + carId + " does not exists"));
+        //car.customerList.add(customer);
+        return carRepository.save(car);
+    }*/
+
     public boolean isFieldSet(String field) {
         return !(field == null || field.isEmpty());
     }
 
-    public boolean isField(int field) {
+    public boolean isFieldSet(int field) {
         return (field != 0);
     }
 
@@ -108,5 +118,9 @@ public class CarService implements com.upskill.rentcars.service.Service {
     private String setServerImageUrl(){
         String[] imageNames = {"car1.png", "car2.png", "car3.png"};
         return ServletUriComponentsBuilder.fromCurrentContextPath().path("/cars/image" + imageNames[2]).toUriString();
+    }
+
+    public Optional<Car> findCarById(Long carId){
+        return carRepository.findById(carId);
     }
 }

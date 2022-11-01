@@ -1,18 +1,19 @@
-package com.upskill.rentcars.model;
+package com.upskill.rentcars.model.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 public class Car {
 
@@ -22,8 +23,11 @@ public class Car {
     private String model;
     private String color;
     private int year;
-    private int vinId;
+    private String vinId;
     private String imageUrl;
-    @NotEmpty(message = "cost cannot be empty or null")
-    private String costPerDay;
+    private int costPerDay;
+
+    public int getCostPerDay() {
+        return costPerDay;
+    }
 }

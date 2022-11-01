@@ -1,4 +1,4 @@
-package com.upskill.rentcars.model;
+package com.upskill.rentcars.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

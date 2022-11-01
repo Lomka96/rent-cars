@@ -1,8 +1,11 @@
 package com.upskill.rentcars.service;
 
-import com.upskill.rentcars.model.Customer;
+import com.upskill.rentcars.model.db.Car;
+import com.upskill.rentcars.model.db.Customer;
+import com.upskill.rentcars.model.dto.OrderRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomerService {
 
@@ -17,4 +20,10 @@ public interface CustomerService {
     Customer updateCustomer(Long id, Customer updateCustomer);
 
     List<Customer> list(int limit);
+
+    Customer addCarToList(Long carId, Long id);
+
+    Optional<Customer> findCustomerByDriverLicense(String driverLicense);
+
+    Customer findCustomerOrCreate(OrderRequest orderRequest);
 }

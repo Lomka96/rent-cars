@@ -1,6 +1,7 @@
 package com.upskill.rentcars.service;
 
-import com.upskill.rentcars.model.Car;
+import com.upskill.rentcars.model.db.Car;
+import com.upskill.rentcars.model.db.Customer;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface Service {
     Car updateCar(Long carId, Car updateCar);
 
     List<Car> list(int limit);
+
+    //Car addCustomerToList(Long carId, Long id);
 }

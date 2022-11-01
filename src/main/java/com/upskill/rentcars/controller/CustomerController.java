@@ -1,7 +1,9 @@
 package com.upskill.rentcars.controller;
 
-import com.upskill.rentcars.model.Customer;
+import com.upskill.rentcars.model.db.Car;
+import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.service.CustomerService;
+import com.upskill.rentcars.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +14,15 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final OrderService orderService;
 
     @Autowired
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, OrderService orderService) {
         this.customerService = customerService;
+        this.orderService = orderService;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public List<Customer> getCustomers(){
         return customerService.getCustomers();
     }
@@ -28,18 +32,25 @@ public class CustomerController {
         return customerService.getCustomer(id);
     }
 
-    @PostMapping("/save")
+    @GetMapping("/{id}/cars")
+    public List<Car> getCustomerCars(@PathVariable("id") Long id){
+        return orderService.getCustomerCars(id);
+    }
+
+    @PostMapping
     public void registerNewCustomer(@RequestBody Customer customer){
         customerService.addNewCustomer(customer);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteCustomerById(@PathVariable("id") Long id){
+        orderService.deleteOrderByCustomerId(id);
         customerService.deleteCustomer(id);
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public Customer updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
         return customerService.updateCustomer(id, customer);
     }
+
 }
