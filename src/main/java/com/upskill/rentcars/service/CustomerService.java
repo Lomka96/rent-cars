@@ -21,8 +21,6 @@ public interface CustomerService {
 
     List<Customer> list(int limit);
 
-    Customer addCarToList(Long carId, Long id);
-
     Optional<Customer> findCustomerByDriverLicense(String driverLicense);
 
     Customer findCustomerOrCreate(OrderRequest orderRequest);

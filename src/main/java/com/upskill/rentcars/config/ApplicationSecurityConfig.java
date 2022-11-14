@@ -34,7 +34,6 @@ public class ApplicationSecurityConfig {
                 .antMatchers(HttpMethod.GET,"/cars").permitAll()
                 .antMatchers(HttpMethod.GET,"/customers").permitAll()
                 //.antMatchers("/customers", "/users/**", "/cars").hasRole("ADMIN")
-
                 .antMatchers("/register", "/auth").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

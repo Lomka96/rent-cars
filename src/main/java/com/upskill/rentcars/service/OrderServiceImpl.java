@@ -1,20 +1,18 @@
 package com.upskill.rentcars.service;
 
 import com.upskill.rentcars.model.db.Car;
-import com.upskill.rentcars.model.db.Customer;
-import com.upskill.rentcars.model.db.Order;
+import com.upskill.rentcars.model.db.Orders;
+import com.upskill.rentcars.model.dto.OrderEditRequest;
 import com.upskill.rentcars.model.dto.OrderRequest;
-import com.upskill.rentcars.repository.CarRepository;
-import com.upskill.rentcars.repository.CustomerRepository;
 import com.upskill.rentcars.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,24 +26,28 @@ public class OrderServiceImpl implements OrderService{
     private final CustomerService customerService;
 
     @Override
-    public List<Order> getOrders() {
-        return orderRepository.findAll();
+    public List<Orders> getOrders() {
+        return orderRepository
+                .findAll()
+                .stream()
+                .sorted(Comparator.comparing(Orders::getStartDate))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Order getOrder(Long id) {
+    public Orders getOrder(Long id) {
         return orderRepository.findById(id).get();
     }
 
     @Override
-    public Order addNewOrder(OrderRequest orderRequest, Long carId) {
+    public Orders addNewOrder(OrderRequest orderRequest, Long carId) {
         Car car = carService.findCarById(carId).get();
-        Order order = new Order();
-        order.setCar(car);
-        order.setCustomer(customerService.findCustomerOrCreate(orderRequest));
-        order.setStartDate(orderRequest.getStartDate());
-        order.setFinishDate(orderRequest.getFinishDate());
-        return orderRepository.save(order);
+        Orders orders = new Orders();
+        orders.setCar(car);
+        orders.setCustomer(customerService.findCustomerOrCreate(orderRequest));
+        orders.setStartDate(orderRequest.getStartDate());
+        orders.setFinishDate(orderRequest.getFinishDate());
+        return orderRepository.save(orders);
     }
 
     @Override
@@ -70,38 +72,59 @@ public class OrderServiceImpl implements OrderService{
     public List<Car> getCustomerCars(Long id) {
         return getOrders().stream()
                 .filter(order -> order.getCustomer().getId().equals(id))
-                .map(Order::getCar)
+                .map(Orders::getCar)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Order updateOrder(Long id, Order updateOrder) {
-        Order order = orderRepository.findById(id).orElseThrow(() ->
+    public Orders updateOrder(Long id, OrderEditRequest orderEditRequest) {
+        Orders orders = orderRepository.findById(id).orElseThrow(() ->
                 new IllegalStateException("order with id " + id + " does not exists"));
-//        if(isField(updateOrder.getCar().getId())) {
-//            order.setCar().getId(updateOrder.getCar().getId());
-//        }
-//        if(isField(updateOrder.getCustomerId())) {
-//            order.setCustomerId(updateOrder.getCustomerId());
-//        }
-//        if(isField(updateOrder.getStartDate())) {
-//            order.setStartDate(updateOrder.getStartDate());
-//        }
-//        if(isField(updateOrder.getFinishDate())) {
-//            order.setFinishDate(updateOrder.getFinishDate());
-//        }
-//        if(isField(updateOrder.getCost())) {
-//            order.setCost(updateOrder.getCost());
-//        }
-        return orderRepository.save(order);
+        if(isFieldSet(orderEditRequest.getFirstName())) {
+            orders.getCustomer().setFirstName(orderEditRequest.getFirstName());
+        }
+        if(isFieldSet(orderEditRequest.getLastName())) {
+            orders.getCustomer().setLastName(orderEditRequest.getLastName());
+        }
+        if(isFieldSet(orderEditRequest.getDriverLicense())) {
+            orders.getCustomer().setDriverLicense(orderEditRequest.getDriverLicense());
+        }
+        if(isFieldSet(orderEditRequest.getEmail())) {
+            orders.getCustomer().setEmail(orderEditRequest.getEmail());
+        }
+        if(isFieldSet(orderEditRequest.getModel())) {
+            orders.getCar().setModel(orderEditRequest.getModel());
+        }
+        if(isFieldSet(orderEditRequest.getColor())) {
+            orders.getCar().setColor(orderEditRequest.getColor());
+        }
+        if(isField(orderEditRequest.getYear())) {
+            orders.getCar().setYear(orderEditRequest.getYear());
+        }
+        if(isFieldSet(orderEditRequest.getVinId())) {
+            orders.getCar().setVinId(orderEditRequest.getVinId());
+        }
+        if(isField(orderEditRequest.getCostPerDay())) {
+            orders.getCar().setCostPerDay(orderEditRequest.getCostPerDay());
+        }
+        if(isField(orderEditRequest.getStartDate())) {
+            orders.setStartDate(orderEditRequest.getStartDate());
+        }
+        if(isField(orderEditRequest.getFinishDate())) {
+            orders.setFinishDate(orderEditRequest.getFinishDate());
+        }
+        return orderRepository.save(orders);
     }
 
     public boolean isField(long field) {
         return (field != 0);
     }
-    public boolean isField(double field) {
+    public boolean isField(int field) {
         return (field != 0);
+    }
+    public boolean isFieldSet(String field) {
+        return !(field == null || field.isEmpty());
     }
     public boolean isField(Date date) {
         return (date != null);

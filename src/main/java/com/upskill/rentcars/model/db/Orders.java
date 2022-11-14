@@ -1,19 +1,19 @@
 package com.upskill.rentcars.model.db;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
-public class Order {
+public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +25,12 @@ public class Order {
     private Date startDate;
     private Date finishDate;
     private double cost;
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
 }

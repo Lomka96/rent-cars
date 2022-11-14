@@ -1,8 +1,7 @@
 package com.upskill.rentcars.controller;
 
-import com.upskill.rentcars.model.db.Car;
-import com.upskill.rentcars.model.db.Customer;
-import com.upskill.rentcars.model.db.Order;
+import com.upskill.rentcars.model.db.Orders;
+import com.upskill.rentcars.model.dto.OrderEditRequest;
 import com.upskill.rentcars.model.dto.OrderRequest;
 import com.upskill.rentcars.service.CustomerService;
 import com.upskill.rentcars.service.OrderService;
@@ -25,18 +24,18 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<Order> getOrders(){
+    public List<Orders> getOrders(){
         return orderService.getOrders();
     }
 
     @GetMapping("/{id}")
-    public Order getOrder(@PathVariable("id") Long id){
+    public Orders getOrder(@PathVariable("id") Long id){
         return orderService.getOrder(id);
     }
 
     @PostMapping("/{carId}")
-    public Order registerNewOrder(@RequestBody OrderRequest orderRequest,
-                                 @PathVariable("carId") Long carId){
+    public Orders registerNewOrder(@RequestBody OrderRequest orderRequest,
+                                   @PathVariable("carId") Long carId){
 
         return orderService.addNewOrder(orderRequest, carId);
     }
@@ -47,7 +46,8 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    public Order updateOrder(@PathVariable("id") Long id, @RequestBody Order order) {
-        return orderService.updateOrder(id, order);
+    public Orders updateOrder(@PathVariable("id") Long id, @RequestBody OrderEditRequest orderEditRequest) {
+        // OrderEditRequest -> Order
+        return orderService.updateOrder(id, orderEditRequest);
     }
 }

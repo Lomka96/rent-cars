@@ -1,7 +1,6 @@
 package com.upskill.rentcars.service;
 
 import com.upskill.rentcars.model.db.Car;
-import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.repository.CarRepository;
 import com.upskill.rentcars.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.Optional;
 public class CarService implements com.upskill.rentcars.service.Service {
 
     private final CarRepository carRepository;
-    private final CustomerRepository customerRepository;
 
     @Override
     public List<Car> getCars(){
@@ -40,7 +38,6 @@ public class CarService implements com.upskill.rentcars.service.Service {
         if(carByVinId.isPresent()) {
             throw new IllegalArgumentException("Vin taken");
         }
-        //car.setImageUrl(setServerImageUrl());
         log.info("Saving a new car with vinId: {}", car.getVinId());
         return carRepository.save(car);
     }
@@ -82,6 +79,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
         }
         log.info("Updating a car with vinId: {}", car.getVinId());
         return carRepository.save(car);
+        
     }
 
     @Override
@@ -90,34 +88,12 @@ public class CarService implements com.upskill.rentcars.service.Service {
         return carRepository.findAll(PageRequest.of(0, limit)).toList();
     }
 
-    /*@Override
-    public Car addCustomerToList(Long carId, Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() ->
-                new IllegalStateException("customer with id " + id + " does not exists"));
-        Car car = carRepository.findById(carId).orElseThrow(() ->
-                new IllegalStateException("car with carId " + carId + " does not exists"));
-        //car.customerList.add(customer);
-        return carRepository.save(car);
-    }*/
-
     public boolean isFieldSet(String field) {
         return !(field == null || field.isEmpty());
     }
 
     public boolean isFieldSet(int field) {
         return (field != 0);
-    }
-
-    /*private String setServerImageUrl(){
-        Random random = new Random();
-        int pictureNumber = random.nextInt(10);
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(
-                "/cars/images/car/" + pictureNumber).toUriString();
-    }*/
-
-    private String setServerImageUrl(){
-        String[] imageNames = {"car1.png", "car2.png", "car3.png"};
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/cars/image" + imageNames[2]).toUriString();
     }
 
     public Optional<Car> findCarById(Long carId){

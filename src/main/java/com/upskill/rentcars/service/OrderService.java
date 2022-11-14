@@ -1,19 +1,19 @@
 package com.upskill.rentcars.service;
 
 import com.upskill.rentcars.model.db.Car;
-import com.upskill.rentcars.model.db.Customer;
-import com.upskill.rentcars.model.db.Order;
+import com.upskill.rentcars.model.db.Orders;
+import com.upskill.rentcars.model.dto.OrderEditRequest;
 import com.upskill.rentcars.model.dto.OrderRequest;
 
 import java.util.List;
 
 public interface OrderService {
 
-    List<Order> getOrders();
+    List<Orders> getOrders();
 
-    Order getOrder(Long id);
+    Orders getOrder(Long id);
 
-    Order addNewOrder(OrderRequest orderRequest, Long carId);
+    Orders addNewOrder(OrderRequest orderRequest, Long carId);
 
     boolean deleteOrder(Long id);
 
@@ -23,5 +23,5 @@ public interface OrderService {
 
     List<Car> getCustomerCars(Long id);
 
-    Order updateOrder(Long id, Order updateOrder);
+    Orders updateOrder(Long id, OrderEditRequest orderEditRequest);
 }

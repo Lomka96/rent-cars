@@ -1,8 +1,6 @@
 package com.upskill.rentcars.service;
 
-import com.upskill.rentcars.model.db.Car;
 import com.upskill.rentcars.model.db.Customer;
-import com.upskill.rentcars.model.db.Order;
 import com.upskill.rentcars.model.dto.OrderRequest;
 import com.upskill.rentcars.repository.CarRepository;
 import com.upskill.rentcars.repository.CustomerRepository;
@@ -11,13 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,26 +77,10 @@ public class CustomerServiceImpl implements CustomerService{
         return !(field == null || field.isEmpty());
     }
 
-    public boolean isFieldDate(Date date) {
-        return !(date == null);
-    }
-
-    public boolean isField(int field) {
-        return (field != 0);
-    }
-
     @Override
     public List<Customer> list(int limit) {
         log.info("Fetching all customers");
         return customerRepository.findAll(PageRequest.of(0, limit)).toList();
-    }
-
-    @Override
-    public Customer addCarToList(Long carId, Long id) {
-        Customer customer = customerRepository.findById(id).get();
-        Car car = carRepository.findById(carId).get();
-        //customer.carList.add(car);
-        return customerRepository.save(customer);
     }
 
     @Override
