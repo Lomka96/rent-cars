@@ -76,7 +76,7 @@ public class CarRepositoryTests {
         Car car = carRepository.findById(1L).get();
         carRepository.delete(car);
         Car car1 = null;
-        Optional<Car> optionalCar = carRepository.findByVinId("155155");
+        Optional<Car> optionalCar = carRepository.findById(1L);
         if(optionalCar.isPresent()){
             car1 = optionalCar.get();
         }

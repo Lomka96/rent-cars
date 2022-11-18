@@ -34,8 +34,8 @@ public class CarService implements com.upskill.rentcars.service.Service {
 
     @Override
     public Car addNewCar(Car car) {
-        Optional<Car> carByVinId = carRepository.findByVinId(car.getVinId());
-        if(carByVinId.isPresent()) {
+        boolean exists = carRepository.findByVinId(car.getVinId());
+        if(exists) {
             throw new IllegalArgumentException("Vin taken");
         }
         log.info("Saving a new car with vinId: {}", car.getVinId());
@@ -80,12 +80,6 @@ public class CarService implements com.upskill.rentcars.service.Service {
         log.info("Updating a car with vinId: {}", car.getVinId());
         return carRepository.save(car);
         
-    }
-
-    @Override
-    public List<Car> list(int limit) {
-        log.info("Fetching all cars");
-        return carRepository.findAll(PageRequest.of(0, limit)).toList();
     }
 
     public boolean isFieldSet(String field) {

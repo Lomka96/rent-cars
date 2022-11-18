@@ -26,8 +26,6 @@ public class ApplicationSecurityConfig {
         http
                 //.httpBasic().disable()
                 .csrf().disable()
-                //.cors()
-                //.and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()

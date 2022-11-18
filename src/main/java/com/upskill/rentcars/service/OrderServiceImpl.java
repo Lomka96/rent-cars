@@ -1,7 +1,7 @@
 package com.upskill.rentcars.service;
 
 import com.upskill.rentcars.model.db.Car;
-import com.upskill.rentcars.model.db.Orders;
+import com.upskill.rentcars.model.db.Order;
 import com.upskill.rentcars.model.dto.OrderEditRequest;
 import com.upskill.rentcars.model.dto.OrderRequest;
 import com.upskill.rentcars.repository.OrderRepository;
@@ -26,23 +26,23 @@ public class OrderServiceImpl implements OrderService{
     private final CustomerService customerService;
 
     @Override
-    public List<Orders> getOrders() {
+    public List<Order> getOrders() {
         return orderRepository
                 .findAll()
                 .stream()
-                .sorted(Comparator.comparing(Orders::getStartDate))
+                .sorted(Comparator.comparing(Order::getStartDate))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Orders getOrder(Long id) {
+    public Order getOrder(Long id) {
         return orderRepository.findById(id).get();
     }
 
     @Override
-    public Orders addNewOrder(OrderRequest orderRequest, Long carId) {
+    public Order addNewOrder(OrderRequest orderRequest, Long carId) {
         Car car = carService.findCarById(carId).get();
-        Orders orders = new Orders();
+        Order orders = new Order();
         orders.setCar(car);
         orders.setCustomer(customerService.findCustomerOrCreate(orderRequest));
         orders.setStartDate(orderRequest.getStartDate());
@@ -72,14 +72,14 @@ public class OrderServiceImpl implements OrderService{
     public List<Car> getCustomerCars(Long id) {
         return getOrders().stream()
                 .filter(order -> order.getCustomer().getId().equals(id))
-                .map(Orders::getCar)
+                .map(Order::getCar)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Orders updateOrder(Long id, OrderEditRequest orderEditRequest) {
-        Orders orders = orderRepository.findById(id).orElseThrow(() ->
+    public Order updateOrder(Long id, OrderEditRequest orderEditRequest) {
+        Order orders = orderRepository.findById(id).orElseThrow(() ->
                 new IllegalStateException("order with id " + id + " does not exists"));
         if(isFieldSet(orderEditRequest.getFirstName())) {
             orders.getCustomer().setFirstName(orderEditRequest.getFirstName());
