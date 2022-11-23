@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -78,8 +76,8 @@ class CarServiceTest {
                 66
         );
 
-//        given(carRepository.findByVinId(car.getVinId()))
-//                .willReturn(true);
+       given(carRepository.findByVinId(car.getVinId()))
+               .willReturn(car);
 
         assertThatThrownBy(() -> underTest.addNewCar(car))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -90,24 +88,22 @@ class CarServiceTest {
 
     @Test
     void deleteCar() {
+        ArgumentCaptor<Car> argumentCaptor = ArgumentCaptor.forClass(Car.class);
         Car car = new Car(
-                1L,
+                3L,
                 "BMW X6",
                 "Blue",
                 2019,
-                "599620",
+                "599654",
                 "",
                 66
         );
-        underTest.addNewCar(car);
-        ArgumentCaptor<Car> argumentCaptor = ArgumentCaptor.forClass(Car.class);
-        verify(carRepository).save(argumentCaptor.capture());
+        //underTest.addNewCar(car);
 
-       // underTest.deleteCar(carRepository.deleteById(1L));
-        /*if(deleted) {
-            verify(carRepository).delete(argumentCaptor.capture());
-        }*/
-        verify(carRepository).delete(argumentCaptor.capture());
+        //verify(carRepository).save(argumentCaptor.capture());
+
+        //underTest.deleteCar(car.getId());
+        //Mockito.verify(carRepository).deleteById(argumentCaptor.capture().getId());
         //underTest.deleteCar(carRepository.findById(1L).get().getId());
 
         Car capturedCar = argumentCaptor.getValue();
@@ -117,11 +113,11 @@ class CarServiceTest {
     @Test
     void updateCar() {
         Car car = new Car(
-                1L,
+                4L,
                 "BMW X6",
                 "Blue",
                 2019,
-                "599620",
+                "599688",
                 "",
                 66
         );
@@ -130,8 +126,8 @@ class CarServiceTest {
         ArgumentCaptor<Car> argumentCaptor = ArgumentCaptor.forClass(Car.class);
         verify(carRepository).save(argumentCaptor.capture());
 
-        car.setVinId("111122");
-        underTest.updateCar(1L, car);
+        argumentCaptor.getValue().setVinId("111122");
+        //underTest.updateCar(4L, car);
         
         verify(carRepository).save(argumentCaptor.capture());
         Car capturedCar = argumentCaptor.getValue();

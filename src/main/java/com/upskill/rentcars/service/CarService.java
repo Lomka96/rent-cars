@@ -44,10 +44,10 @@ public class CarService implements com.upskill.rentcars.service.Service {
 
     @Override
     public boolean deleteCar(Long carId) {
-        boolean exists = carRepository.existsById(carId);
+        /*boolean exists = carRepository.existsById(carId);
         if (!exists) {
             throw new IllegalArgumentException("Car with id " + carId + " does not exists");
-        }
+        }*/
         log.info("Deleting a car with id: {}", carId);
         carRepository.deleteById(carId);
         return true;
