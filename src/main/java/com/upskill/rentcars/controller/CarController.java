@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static java.time.LocalDateTime.now;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @RestController

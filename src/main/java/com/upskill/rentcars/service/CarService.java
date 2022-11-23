@@ -22,7 +22,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
     private final CarRepository carRepository;
 
     @Override
-    public List<Car> getCars(){
+    public List<Car> getCars() {
         return carRepository.findAll();
     }
 
@@ -34,8 +34,8 @@ public class CarService implements com.upskill.rentcars.service.Service {
 
     @Override
     public Car addNewCar(Car car) {
-        boolean exists = carRepository.findByVinId(car.getVinId());
-        if(exists) {
+        Car car1 = carRepository.findByVinId(car.getVinId());
+        if (car1 != null) {
             throw new IllegalArgumentException("Vin taken");
         }
         log.info("Saving a new car with vinId: {}", car.getVinId());
@@ -45,7 +45,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
     @Override
     public boolean deleteCar(Long carId) {
         boolean exists = carRepository.existsById(carId);
-        if(!exists){
+        if (!exists) {
             throw new IllegalArgumentException("Car with id " + carId + " does not exists");
         }
         log.info("Deleting a car with id: {}", carId);
@@ -79,7 +79,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
         }
         log.info("Updating a car with vinId: {}", car.getVinId());
         return carRepository.save(car);
-        
+
     }
 
     public boolean isFieldSet(String field) {
@@ -90,7 +90,7 @@ public class CarService implements com.upskill.rentcars.service.Service {
         return (field != 0);
     }
 
-    public Optional<Car> findCarById(Long carId){
+    public Optional<Car> findCarById(Long carId) {
         return carRepository.findById(carId);
     }
 }

@@ -78,8 +78,8 @@ class CarServiceTest {
                 66
         );
 
-        given(carRepository.findByVinId(car.getVinId()))
-                .willReturn(true);
+//        given(carRepository.findByVinId(car.getVinId()))
+//                .willReturn(true);
 
         assertThatThrownBy(() -> underTest.addNewCar(car))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -101,14 +101,15 @@ class CarServiceTest {
         );
         underTest.addNewCar(car);
         ArgumentCaptor<Car> argumentCaptor = ArgumentCaptor.forClass(Car.class);
+        verify(carRepository).save(argumentCaptor.capture());
+
+       // underTest.deleteCar(carRepository.deleteById(1L));
+        /*if(deleted) {
+            verify(carRepository).delete(argumentCaptor.capture());
+        }*/
         verify(carRepository).delete(argumentCaptor.capture());
-        carRepository.delete(argumentCaptor.capture());
         //underTest.deleteCar(carRepository.findById(1L).get().getId());
-//        Car car1 = null;
-//        if(underTest.findCarById(car.getId()).isPresent()){
-//            car1 = carRepository.findById(car.getId()).get();
-//        }
-//        assertThat(car1).isNull();
+
         Car capturedCar = argumentCaptor.getValue();
         assertThat(capturedCar).isNull();
     }
@@ -137,7 +138,4 @@ class CarServiceTest {
         assertThat(capturedCar).isEqualTo(car);
     }
 
-    @Test
-    void findCarById() {
-    }
 }

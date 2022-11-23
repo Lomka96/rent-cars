@@ -8,7 +8,6 @@ import com.upskill.rentcars.model.dto.RegistrationRequest;
 import com.upskill.rentcars.model.db.User;
 import com.upskill.rentcars.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,8 +39,7 @@ public class AuthController {
     public AuthData auth(@RequestBody AuthRequest request) {
         User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         String token = jwtProvider.generateToken(user.getLogin());
-        String userLogin = jwtProvider.getLoginFromToken(token);
-        Role role = userService.findByLogin(userLogin).getRole();
+        Role role = userService.findByLogin(request.getLogin()).getRole();
         return new AuthData(token, role);
     }
 }
