@@ -19,8 +19,6 @@ public interface CustomerService {
 
     Customer updateCustomer(Long id, Customer updateCustomer);
 
-    List<Customer> list(int limit);
-
     Optional<Customer> findCustomerByDriverLicense(String driverLicense);
 
     Customer findCustomerOrCreate(OrderRequest orderRequest);

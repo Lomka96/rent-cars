@@ -26,6 +26,8 @@ class CarServiceTest {
     private CarRepository carRepository;
     private AutoCloseable autoCloseable;
     private CarService underTest;
+    @Captor
+    private ArgumentCaptor<Car> captor;
 
     @BeforeEach
     void setUp() {

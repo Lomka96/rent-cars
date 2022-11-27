@@ -1,9 +1,11 @@
 package com.upskill.rentcars.service;
 
 import com.upskill.rentcars.model.db.Car;
+import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.model.db.Order;
 import com.upskill.rentcars.model.dto.OrderEditRequest;
 import com.upskill.rentcars.model.dto.OrderRequest;
+import com.upskill.rentcars.repository.CarRepository;
 import com.upskill.rentcars.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
-    private final CarService carService;
+    private final CarRepository carRepository;
     private final CustomerService customerService;
 
     @Override
@@ -36,12 +39,17 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public Order getOrder(Long id) {
-        return orderRepository.findById(id).get();
+        log.info("Fetching customer by id: {}", id);
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+        if (optionalOrder.isPresent()) {
+            return orderRepository.findById(id).get();
+        }
+        throw new RuntimeException("No order with id=" + id);
     }
 
     @Override
     public Order addNewOrder(OrderRequest orderRequest, Long carId) {
-        Car car = carService.findCarById(carId).get();
+        Car car = carRepository.findById(carId).get();
         Order orders = new Order();
         orders.setCar(car);
         orders.setCustomer(customerService.findCustomerOrCreate(orderRequest));
@@ -117,9 +125,6 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.save(orders);
     }
 
-    public boolean isField(long field) {
-        return (field != 0);
-    }
     public boolean isField(int field) {
         return (field != 0);
     }

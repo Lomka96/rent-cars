@@ -5,6 +5,7 @@ import com.upskill.rentcars.repository.CarRepository;
 import com.upskill.rentcars.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mockito.Spy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,11 @@ public class CarService implements com.upskill.rentcars.service.Service {
     @Override
     public Car getCar(Long carId) {
         log.info("Fetching car by id: {}", carId);
-        return carRepository.findById(carId).get();
+        Optional<Car> optionalCar = carRepository.findById(carId);
+        if (optionalCar.isPresent()) {
+            return carRepository.findById(carId).get();
+        }
+        throw new RuntimeException("No car with id=" + carId);
     }
 
     @Override
@@ -44,10 +49,10 @@ public class CarService implements com.upskill.rentcars.service.Service {
 
     @Override
     public boolean deleteCar(Long carId) {
-        /*boolean exists = carRepository.existsById(carId);
+        boolean exists = carRepository.existsById(carId);
         if (!exists) {
             throw new IllegalArgumentException("Car with id " + carId + " does not exists");
-        }*/
+        }
         log.info("Deleting a car with id: {}", carId);
         carRepository.deleteById(carId);
         return true;
@@ -88,9 +93,5 @@ public class CarService implements com.upskill.rentcars.service.Service {
 
     public boolean isFieldSet(int field) {
         return (field != 0);
-    }
-
-    public Optional<Car> findCarById(Long carId) {
-        return carRepository.findById(carId);
     }
 }

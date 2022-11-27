@@ -1,8 +1,8 @@
 package com.upskill.rentcars.service;
 
+import com.upskill.rentcars.model.db.Car;
 import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.model.dto.OrderRequest;
-import com.upskill.rentcars.repository.CarRepository;
 import com.upskill.rentcars.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,6 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService{
 
     private final CustomerRepository customerRepository;
-    private final CarRepository carRepository;
 
     @Override
     public List<Customer> getCustomers() {
@@ -29,7 +28,11 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public Customer getCustomer(Long id) {
         log.info("Fetching customer by id: {}", id);
-        return customerRepository.findById(id).get();
+        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+        if (optionalCustomer.isPresent()) {
+            return customerRepository.findById(id).get();
+        }
+        throw new RuntimeException("No customer with id=" + id);
     }
 
     @Override
@@ -75,12 +78,6 @@ public class CustomerServiceImpl implements CustomerService{
 
     public boolean isFieldSet(String field) {
         return !(field == null || field.isEmpty());
-    }
-
-    @Override
-    public List<Customer> list(int limit) {
-        log.info("Fetching all customers");
-        return customerRepository.findAll(PageRequest.of(0, limit)).toList();
     }
 
     @Override
