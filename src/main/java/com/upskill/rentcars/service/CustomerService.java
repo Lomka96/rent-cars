@@ -1,9 +1,7 @@
 package com.upskill.rentcars.service;
 
-import com.upskill.rentcars.model.db.Car;
 import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.model.dto.OrderRequest;
-
 import java.util.List;
 import java.util.Optional;
 

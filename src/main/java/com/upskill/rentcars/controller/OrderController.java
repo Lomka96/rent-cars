@@ -47,7 +47,6 @@ public class OrderController {
 
     @PatchMapping("/{id}")
     public Order updateOrder(@PathVariable("id") Long id, @RequestBody OrderEditRequest orderEditRequest) {
-        // OrderEditRequest -> Order
         return orderService.updateOrder(id, orderEditRequest);
     }
 }

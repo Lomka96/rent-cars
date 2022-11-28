@@ -19,8 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,16 +33,7 @@ public class OrderServiceTest {
             "2022100", "Ivan_Ivanov@gmail.com");
     public static final Customer CUSTOMER_2 = new Customer( 2L, "Petr", "Petrov",
             "2022101", "Petr_Petrov@gmail.com");
-
-    public static Date convertIntToDate(Integer intDate) {
-        int intYear = intDate/100;
-        int intMonth = intDate - (intYear * 100);
-        Calendar result = new GregorianCalendar();
-        result.set(intYear, intMonth - 1, 1, 0, 0, 0);
-        return result.getTime();
-    }
-
-    public static final Order ORDER_1 = new Order(1L, CUSTOMER_1, CAR_1, convertIntToDate(150000), convertIntToDate(160000), 77);
+    public static final Order ORDER_1 = new Order(null, CUSTOMER_1, CAR_1, convertIntToDate(150000), convertIntToDate(160000), 0);
     public static final Order ORDER_2 = new Order(2L, CUSTOMER_2, CAR_2, convertIntToDate(165000), convertIntToDate(175000), 88);
     public static final List<Order> ORDERS_LIST = Arrays.asList(ORDER_1, ORDER_2);
     public static final OrderRequest ORDER_REQUEST = new OrderRequest(CUSTOMER_1.getFirstName(), CUSTOMER_1.getLastName(),
@@ -95,27 +85,27 @@ public class OrderServiceTest {
     public void whenAddNewOrder_thenOrderAdded() {
         Mockito.when(carRepository.findById(CAR_1.getId())).thenReturn(Optional.of(CAR_1));
         Mockito.when(customerService.findCustomerOrCreate(ORDER_REQUEST)).thenReturn(CUSTOMER_1);
-        Mockito.when(orderRepository.save(ORDER_1)).thenReturn(ORDER_1);
+        Mockito.when(orderRepository.save(any(Order.class))).thenAnswer(i -> i.getArguments()[0]);
         Order testOrder = orderService.addNewOrder(ORDER_REQUEST, CAR_1.getId());
         Assert.assertEquals(ORDER_1, testOrder);
     }
 
     @Test
     public void whenDeleteOrder_thenOrderDeleted() {
-        Mockito.when(orderRepository.existsById(ORDER_1.getId())).thenReturn(true);
-        Assert.assertTrue(orderService.deleteOrder(ORDER_1.getId()));
+        Mockito.doNothing().when(orderRepository).deleteById(ORDER_2.getId());
+        Assert.assertTrue(orderService.deleteOrder(ORDER_2.getId()));
     }
 
     @Test
     public void whenDeleteOrderByCarId_thenOrderDeleted() {
-        Mockito.when(orderRepository.existsById(ORDER_1.getId())).thenReturn(true);
-        Assert.assertTrue(orderService.deleteOrderByCarId(ORDER_1.getCar().getId()));
+        Mockito.doNothing().when(orderRepository).deleteByCarId(CAR_2.getId());
+        Assert.assertTrue(orderService.deleteOrderByCarId(ORDER_2.getCar().getId()));
     }
 
     @Test
     public void whenDeleteOrderByCustomerId_thenOrderDeleted() {
-        Mockito.when(orderRepository.existsById(ORDER_1.getId())).thenReturn(true);
-        Assert.assertTrue(orderService.deleteOrderByCustomerId(ORDER_1.getCustomer().getId()));
+        Mockito.doNothing().when(orderRepository).deleteByCustomerId(CUSTOMER_2.getId());
+        Assert.assertTrue(orderService.deleteOrderByCustomerId(ORDER_2.getCustomer().getId()));
     }
 
     @Test
@@ -132,11 +122,11 @@ public class OrderServiceTest {
     @Test
     public void whenUpdateOrder_thenOrderUpdated() {
         OrderServiceImpl spyOrderService = Mockito.spy(orderService);
-        OrderEditRequest updatedOrderEditRequest = new OrderEditRequest(1L, CUSTOMER_1.getFirstName(), CUSTOMER_1.getLastName(),
-                CUSTOMER_1.getDriverLicense(), CUSTOMER_1.getEmail(), CAR_1.getModel(), CAR_1.getColor(), CAR_1.getYear(),
-                CAR_1.getVinId(), CAR_1.getCostPerDay(), ORDER_2.getStartDate(), ORDER_2.getFinishDate());
-        Mockito.when(orderRepository.findById(ORDER_1.getId())).thenReturn(Optional.of(ORDER_1));
-        spyOrderService.updateOrder(1L, updatedOrderEditRequest);
+        OrderEditRequest updatedOrderEditRequest = new OrderEditRequest(2L, CUSTOMER_2.getFirstName(), CUSTOMER_2.getLastName(),
+                CUSTOMER_2.getDriverLicense(), CUSTOMER_2.getEmail(), CAR_2.getModel(), CAR_2.getColor(), CAR_2.getYear(),
+                CAR_2.getVinId(), CAR_2.getCostPerDay(), ORDER_1.getStartDate(), ORDER_1.getFinishDate());
+        Mockito.when(orderRepository.findById(ORDER_2.getId())).thenReturn(Optional.of(ORDER_2));
+        spyOrderService.updateOrder(2L, updatedOrderEditRequest);
         Mockito.verify(spyOrderService, times(7)).isFieldSet(anyString());
         Mockito.verify(spyOrderService, times(2)).isField(anyInt());
     }
@@ -145,5 +135,13 @@ public class OrderServiceTest {
     public void whenUpdateOrderWithNotExistingId_thenExceptionThrows() {
         Mockito.when(orderRepository.findById(6L)).thenReturn(Optional.ofNullable(null));
         orderService.updateOrder(6L, ORDER_EDIT_REQUEST);
+    }
+
+    public static Date convertIntToDate(Integer intDate) {
+        int intYear = intDate/100;
+        int intMonth = intDate - (intYear * 100);
+        Calendar result = new GregorianCalendar();
+        result.set(intYear, intMonth - 1, 1, 0, 0, 0);
+        return result.getTime();
     }
 }

@@ -1,6 +1,5 @@
 package com.upskill.rentcars.model.dto;
 
-import com.upskill.rentcars.model.db.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,16 +1,17 @@
 package com.upskill.rentcars.service;
 
-import com.upskill.rentcars.model.db.Car;
 import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.model.dto.OrderRequest;
 import com.upskill.rentcars.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public List<Customer> getCustomers() {
-        return customerRepository.findAll();
+        return customerRepository.findAll().stream().sorted(Comparator.comparing(Customer::getId)).collect(Collectors.toList());
     }
 
     @Override

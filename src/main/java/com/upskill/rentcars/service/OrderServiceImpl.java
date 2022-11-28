@@ -1,7 +1,6 @@
 package com.upskill.rentcars.service;
 
 import com.upskill.rentcars.model.db.Car;
-import com.upskill.rentcars.model.db.Customer;
 import com.upskill.rentcars.model.db.Order;
 import com.upskill.rentcars.model.dto.OrderEditRequest;
 import com.upskill.rentcars.model.dto.OrderRequest;
@@ -50,12 +49,12 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Order addNewOrder(OrderRequest orderRequest, Long carId) {
         Car car = carRepository.findById(carId).get();
-        Order orders = new Order();
-        orders.setCar(car);
-        orders.setCustomer(customerService.findCustomerOrCreate(orderRequest));
-        orders.setStartDate(orderRequest.getStartDate());
-        orders.setFinishDate(orderRequest.getFinishDate());
-        return orderRepository.save(orders);
+        Order order = new Order();
+        order.setCar(car);
+        order.setCustomer(customerService.findCustomerOrCreate(orderRequest));
+        order.setStartDate(orderRequest.getStartDate());
+        order.setFinishDate(orderRequest.getFinishDate());
+        return orderRepository.save(order);
     }
 
     @Override

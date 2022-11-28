@@ -19,6 +19,7 @@ import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerServiceTest {
+
     public static final Customer CUSTOMER_1 = new Customer( 1L, "Ivan", "Ivanov",
             "2022100", "Ivan_Ivanov@gmail.com");
     public static final Customer CUSTOMER_2 = new Customer( 2L, "Petr", "Petrov",
@@ -56,12 +57,13 @@ public class CustomerServiceTest {
     public void whenGetNonexistentCustomer_thenExceptionThrows() {
         long id = 5L;
         Mockito.when(customerRepository.findById(id)).thenReturn(Optional.ofNullable(null));
-        Customer testCustomer = customerService.getCustomer(id);
+        customerService.getCustomer(id);
     }
 
     @Test
     public void whenAddNewCustomer_thenCustomerAdded() {
-        Mockito.when(customerRepository.findByDriverLicense(CUSTOMER_2.getDriverLicense())).thenReturn(Optional.of(CUSTOMER_2));
+        Mockito.when(customerRepository.findByDriverLicense(CUSTOMER_2.getDriverLicense())).thenReturn(Optional.ofNullable(null));
+        Mockito.when(customerRepository.save(CUSTOMER_2)).thenReturn(CUSTOMER_2);
         Customer testCustomer = customerService.addNewCustomer(CUSTOMER_2);
         Assert.assertEquals(CUSTOMER_2, testCustomer);
     }
